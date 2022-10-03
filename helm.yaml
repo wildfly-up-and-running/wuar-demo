@@ -1,0 +1,7 @@
+image:
+  name: ghcr.io/wildfly-up-and-running/wuar-demo
+build:
+  enabled: false
+deploy:
+  route:
+    enabled: false
