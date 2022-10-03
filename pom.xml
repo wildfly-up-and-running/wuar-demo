@@ -23,7 +23,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <failOnMissingWebXml>false</failOnMissingWebXml>
 
-        <version.wildfly>27.0.0.Beta1</version.wildfly>
+        <version.wildfly>27.0.0.Alpha5</version.wildfly>
         <version.wildfly.cloud>2.0.0.Alpha4</version.wildfly.cloud>
         <version.wildfly.maven.plugin>4.0.0.Beta4-SNAPSHOT</version.wildfly.maven.plugin>
     </properties>
@@ -36,6 +36,14 @@
                 <version>10.0.0</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- We add the WildFly Galleon Pack as a provided dependency
+                 to be able to  use dependabot to be notified of new releases -->
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-galleon-pack</artifactId>
+                <version>${version.wildfly}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
