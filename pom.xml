@@ -37,14 +37,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- We add the WildFly Galleon Pack as a provided dependency
-                 to be able to  use dependabot to be notified of new releases -->
-            <dependency>
-                <groupId>org.wildfly</groupId>
-                <artifactId>wildfly-galleon-pack</artifactId>
-                <version>${version.wildfly}</version>
-                <scope>provided</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -62,6 +54,16 @@
         <dependency>
             <groupId>jakarta.inject</groupId>
             <artifactId>jakarta.inject-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- We add the WildFly Galleon Pack as a provided dependency
+             to be able to  use dependabot to be notified of new releases -->
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-galleon-pack</artifactId>
+            <version>${version.wildfly}</version>
+            <type>zip</type>
             <scope>provided</scope>
         </dependency>
 
