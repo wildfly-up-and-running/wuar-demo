@@ -5,3 +5,7 @@ build:
 deploy:
   route:
     enabled: false
+  env:
+    # temporary workaround to be able to port-forward
+    - name: SERVER_PUBLIC_BIND_ADDRESS
+      value: 0.0.0.0
