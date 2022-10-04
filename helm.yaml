@@ -8,6 +8,3 @@ deploy:
   env:
     - name: DEMO_DEFAULT_TEXT
       value: Hello from Kubernetes!
-    # temporary workaround to be able to port-forward
-    - name: SERVER_PUBLIC_BIND_ADDRESS
-      value: 0.0.0.0
