@@ -18,8 +18,8 @@ To build the application, you need:
 To deploy the application, you need:
 
 * a Kubernetes cluster up and running (for example with https://kind.sigs.k8s.io[Kind]).
-* (https://kubernetes.io/docs/tasks/tools/#kubectl)[`kubectl`]
-* (https://helm.sh)[`helm`]
+* https://kubernetes.io/docs/tasks/tools/#kubectl[`kubectl`]
+* https://helm.sh[`helm`]
 
 ## Build the Application
 
