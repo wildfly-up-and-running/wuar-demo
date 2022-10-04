@@ -35,12 +35,13 @@ import org.junit.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
-public class Demo_IT {
+public class DemoReverse_IT {
 
     private static DockerImageName imageName = DockerImageName.parse(System.getProperty("imageName"));
 
     @Rule
     public GenericContainer server = new GenericContainer(imageName)
+            .withEnv("DEMO_DEFAULT_TEXT", "Hello From Test!")
             .withExposedPorts(8080);
 
     private URI endpoint;
@@ -50,21 +51,21 @@ public class Demo_IT {
         String address = server.getHost();
         Integer port = server.getFirstMappedPort();
 
-        endpoint = new URI("http://" + address + ":" + port + "/");
+        endpoint = new URI("http://" + address + ":" + port);
     }
 
     @Test
-    public void testZero() {
+    public void testReverseWithNoParam() {
         Client client = ClientBuilder.newClient();
         try {
             Response response = client
                     .target(endpoint)
-                    .queryParam("value", 0)
+                    .path("/reverse")
                     .request()
                     .get();
 
             assertEquals(200, response.getStatus());
-            assertEquals(0, (long)response.readEntity(Long.class));
+            assertEquals("!tseT morF olleH", response.readEntity(String.class));
 
         } finally {
             client.close();
@@ -72,36 +73,19 @@ public class Demo_IT {
     }
 
     @Test
-    public void testPositiveValue() {
+    public void testReverseWithParam() {
 
         Client client = ClientBuilder.newClient();
         try {
             Response response = client
                     .target(endpoint)
-                    .path("/")
-                    .queryParam("value", 3)
+                    .path("/reverse")
+                    .queryParam("text", "Does it work?")
                     .request()
                     .get();
 
             assertEquals(200, response.getStatus());
-            assertEquals("9", response.readEntity(String.class));
-
-        } finally {
-            client.close();
-        }
-    }
-
-    @Test
-    public void testNonLongValues() {
-        Client client = ClientBuilder.newClient();
-        try {
-            Response response = client
-                    .target(endpoint)
-                    .path("/")
-                    .queryParam("value", "this is not a long")
-                    .request()
-                    .get();
-            assertEquals(404, response.getStatus());
+            assertEquals("?krow ti seoD", response.readEntity(String.class));
 
         } finally {
             client.close();
