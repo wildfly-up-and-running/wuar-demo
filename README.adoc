@@ -15,7 +15,11 @@ To build the application, you need:
 * Maven installed
 * Docker binary installed
 
-To deploy the application, you need a Kubernetes cluster (for example with https://kind.sigs.k8s.io[Kind]).
+To deploy the application, you need:
+
+* a Kubernetes cluster up and running (for example with https://kind.sigs.k8s.io[Kind]).
+* [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl)
+* [`helm`](https://helm.sh)
 
 ## Build the Application
 
