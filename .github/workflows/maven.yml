@@ -40,4 +40,13 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: |
         docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      
+    - name: Store the application image digest
+      if: github.ref == 'refs/heads/main'
+      run: |
+        docker images --digests  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} > target/digest.txt
+    - name: Upload the application image digest
+      if: github.ref == 'refs/heads/main'
+      uses: 'actions/upload-artifact@v2'
+      with:
+        name: digest.txt
+        path: target/digest.txt
