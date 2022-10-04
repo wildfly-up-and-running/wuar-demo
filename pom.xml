@@ -57,16 +57,15 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- We add the WildFly Galleon Pack as a provided dependency
-             to be able to  use dependabot to be notified of new releases -->
+        <!-- We add the WildFly Galleon Pack as a provided POM dependency
+             to be able to  use dependabot to be notified of updates -->
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-galleon-pack</artifactId>
             <version>${version.wildfly}</version>
-            <type>zip</type>
+            <type>pom</type>
             <scope>provided</scope>
         </dependency>
-
 
         <!-- Rest of the dependencies are to run tests -->
         <dependency>
@@ -94,6 +93,36 @@
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>${version.wildfly.maven.plugin}</version>
+                <configuration>
+                    <feature-packs>
+                        <feature-pack>
+                            <location>org.wildfly:wildfly-galleon-pack:${version.wildfly}</location>
+                        </feature-pack>
+                        <feature-pack>
+                            <location>org.wildfly.cloud:wildfly-cloud-galleon-pack:${version.wildfly.cloud}</location>
+                        </feature-pack>
+                    </feature-packs>
+                    <layers>
+                        <layer>jaxrs-server</layer>
+                    </layers>
+                    <image>
+                        <registry>ghcr.io</registry>
+                        <group>wildfly-up-and-running</group>
+                    </image>
+                    <runtime-name>ROOT.war</runtime-name>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>image</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
@@ -115,46 +144,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>wildfly</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.wildfly.plugins</groupId>
-                        <artifactId>wildfly-maven-plugin</artifactId>
-                        <version>${version.wildfly.maven.plugin}</version>
-                        <configuration>
-                            <feature-packs>
-                                <feature-pack>
-                                    <location>org.wildfly:wildfly-galleon-pack:${version.wildfly}</location>
-                                </feature-pack>
-                                <feature-pack>
-                                    <location>org.wildfly.cloud:wildfly-cloud-galleon-pack:${version.wildfly.cloud}</location>
-                                </feature-pack>
-                            </feature-packs>
-                            <layers>
-                                <layer>jaxrs-server</layer>
-                            </layers>
-                            <image>
-                                <registry>ghcr.io</registry>
-                                <group>wildfly-up-and-running</group>
-                            </image>
-                            <runtime-name>ROOT.war</runtime-name>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>image</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
