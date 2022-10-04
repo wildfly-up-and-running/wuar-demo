@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wildfly-up-and-running</groupId>
+    <groupId>wildfly-up-and-running</groupId>
     <artifactId>wuar-demo</artifactId>
     <version>1.0.0.Final</version>
     <packaging>war</packaging>
@@ -26,6 +26,8 @@
         <version.wildfly>27.0.0.Beta1</version.wildfly>
         <version.wildfly.cloud>2.0.0.Beta2</version.wildfly.cloud>
         <version.wildfly.maven.plugin>4.0.0.Beta4</version.wildfly.maven.plugin>
+
+        <container.registry>ghcr.io</container.registry>
     </properties>
 
     <dependencyManagement>
@@ -120,8 +122,8 @@
                         <layer>microprofile-platform</layer>
                     </layers>
                     <image>
-                        <registry>ghcr.io</registry>
-                        <group>wildfly-up-and-running</group>
+                        <registry>${container.registry}</registry>
+                        <group>${project.groupId}</group>
                     </image>
                     <runtime-name>ROOT.war</runtime-name>
                 </configuration>
@@ -138,7 +140,7 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <systemProperties>
-                        <imageName>ghcr.io/wildfly-up-and-running/${project.artifactId}</imageName>
+                        <imageName>${container.registry}/${project.groupId}/${project.artifactId}</imageName>
                     </systemProperties>
                     <includes>
                         <include>**/*IT</include>
