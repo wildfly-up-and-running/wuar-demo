@@ -1,94 +1,101 @@
-# Build and run a Web deployment with WildFly
+# WildFly Up and Running - Demo
 :toc:               left
 
-## Build and run on local machine
+This demo application showcase of to get https://wildfly.org[WildFly] up and running on the Cloud.
 
-### Build the application
+It provides a simple Jakarta EE Web application with a `/reverse` HTTP endpoint that returns the reverse of the `text` input.
 
-We are using the `package` goal of the `org.wildfly.plugins:wildfly-maven-plugin` to provision WildFly and deploy the WAR on it.
+It uses MicroProfile Config to configure the default text if no `text` parameter is passed to the HTTP request.
 
-You can build the application:
+## Prerequisites
+
+To build the application, you need:
+
+* Java 11 or higher installed
+* Maven installed
+* Docker binary installed
+
+To deploy the application, you need a Kubernetes cluster (for example with https://kind.sigs.k8s.io[Kind]).
+
+## Build the Application
+
+We use the `image` goal of the `org.wildfly.plugins:wildfly-maven-plugin` to create an application image that contains WildFly and the Web deployment.
+
+You can build the application image with `mvn package`:
 
 [source,bash]
 ----
 $ mvn clean package
+...
+[INFO] Successfully built application image ghcr.io/wildfly-up-and-running/wuar-demo:latest
 ----
 
-At the end of the Maven execution, the application (composed of WildFly and the WAR) has been created put in the `target/server` directory.
+At the end of the Maven execution, the application image has been built with the name `ghcr.io/wildfly-up-and-running/wuar-demo`.
 
-### Run the application
+## Run the Application Locally With Docker
 
-You can run the application with:
+You can run the application image with:
 
 [source,bash]
 ----
-$ ./target/server/bin/standalone.sh
+$ docker run -p 8080:8080 ghcr.io/wildfly-up-and-running/wuar-demo
 ...
-15:22:47,744 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: WildFly Full 27.0.0.Alpha5 (WildFly Core 19.0.0.Beta15) started in 5125ms - Started 261 of 358 services (145 services are lazy, passive or on-demand) - Server configuration file in use: standalone.xml
+11:06:15,546 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: WildFly Full 27.0.0.Beta1 (WildFly Core 19.0.0.Beta18) started in 2755ms - Started 261 of 358 services (145 services are lazy, passive or on-demand) - Server configuration file in use: standalone.xml
 ----
 
 Once the application is started, we can query it with:
 
 [source,bash]
 ----
-$ curl "http://localhost:8080/?value=3"
-9
+$ curl "http://localhost:8080/reverse?text=Bonjour"
+ruojnoB
 ----
 
-### Test the application
+## Run Integration Tests Against The Application
 
-You can test the complete application (WildFly + deployment) using Arquillian.
-Arquillian will manage the application and start it before the integration tests are run with:
+The application is tested using https://www.testcontainers.org[Testcontainers]. This allows to write integration tests with JUnit that are testing the actual application (composed of WildFly and the Web deployment inside the image).
 
 [source,bash]
 ----
 mvn clean verify
 ----
 
-### Build and Push the Application Image
+## Deploy the Application on Kubernetes
 
-We are using the `image` goal of the `org.wildfly.plugins:wildfly-maven-plugin` to create a container image that contains the application (WildFly + WAR)
-This goal relies on a Docker binary (`docker` by default or `podman`) to perform the image commands.
-We have modified the `<wildfly-maven-plugin` configuration to push the application image to quay.io.
-
-We can now build and push the application image with:
+To deploy a fully functional applicaton on Kubernetes (with healthiness probes, resource requiremetns etc.) we can use the https://github.com/wildfly/wildfly-charts/blob/main/charts/wildfly/README.md[Helm Chart for WildFly] with the configuration specific to the demo in a `helm.yaml` file.
 
 [source,bash]
 ----
-$ mvn clean package
-...
-[INFO] --- wildfly-maven-plugin:4.0.0.Beta4-SNAPSHOT:image (default) @ wildfly-demo ---
-...
-[INFO] Successfully built application image quay.io/jmesnil/wildfly-demo:latest
-...
-[INFO] Successfully pushed application image quay.io/jmesnil/wildfly-demo:latest
+helm install wuar-demo wildfly \
+  -f https://raw.githubusercontent.com/wildfly-up-and-running/wuar-demo/main/helm.yaml \
+  --repo https://docs.wildfly.org/wildfly-charts/
 ----
 
-### Run the application image
-
-We can run the application image with:
+We can watch the application being deployed with:
 
 [source,bash]
 ----
-$ docker run -p 8080:8080 quay.io/jmesnil/wildfly-demo:latest
+$ kubectl get deployment wuar-demo -w
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+wuar-demo   0/1     1            0           14s
+wuar-demo   1/1     1            1           55s
 ----
 
-Once the image is started, we can query it with:
+The application is now up and running on Kubernetes.
+
+It is not exposed oustide of the Kubernetes cluster so we will use Port Forwarding to access it from the outside by running:
 
 [source,bash]
 ----
-$ curl "http://localhost:8080/?value=3"
-9
+kubectl port-forward deployment/wuar-demo 8080:8080
 ----
 
-## Deploy on Kubernetes
-
-To deploy a fully functional applicaton on Kubernetes (with healthiness probes, etc.) we can use the Helm Chart for WildFly with
-the specific configuration in a `helm.yaml` file.
-
-We also need to create a secret to be able to pull the image from the private registry at quay.io by following the [Kubernetes documentation](https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod). For this example, the secret is named `quay-pull-secret`.
+We can now use the application on the `localhost:8080` URL:
 
 [source,bash]
 ----
-$ helm install power-of-n -f helm.yaml ~/Developer/wildfly-charts/charts/wildfly
+$ curl "http://localhost:8080/reverse"
+!setenrebuK morf olleH
+$ curl "http://localhost:8080/reverse?text=No+lemon,+No+Melon"
+noleM oN ,nomel oN
 ----
