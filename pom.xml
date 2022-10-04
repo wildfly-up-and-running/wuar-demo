@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wildly-up-and-running</groupId>
+    <groupId>org.wildfly-up-and-running</groupId>
     <artifactId>wuar-demo</artifactId>
     <version>1.0.0.Final</version>
     <packaging>war</packaging>
@@ -140,7 +140,6 @@
                                 <layer>jaxrs-server</layer>
                             </layers>
                             <image>
-                                <push>true</push>
                                 <registry>ghcr.io</registry>
                                 <group>wildfly-up-and-running</group>
                             </image>
@@ -149,7 +148,7 @@
                         <executions>
                             <execution>
                                 <goals>
-                                    <goal>package</goal>
+                                    <goal>image</goal>
                                 </goals>
                             </execution>
                         </executions>
