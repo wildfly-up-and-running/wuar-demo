@@ -31,17 +31,11 @@ public class DemoServiceTest {
     DemoService service = new DemoService();
 
     @Test
-    public void testPositiveValue() {
-        long result = service.powerOf(2, 2);
-        assertEquals(4, result);
+    public void testRevertText() {
+        String result = service.reverse("abcdef");
+        assertEquals("fedcba", result);
 
-        result = service.powerOf(3, 2);
-        assertEquals(9, result);
-    }
-
-    @Test
-    public void testZero() {
-        long result = service.powerOf(0, 2);
-        assertEquals(0, result);
+        result = service.reverse("");
+        assertEquals("", result);
     }
 }

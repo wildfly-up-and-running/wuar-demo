@@ -26,7 +26,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DemoService {
 
-    public long powerOf(long a, long b) {
-        return (long) Math.pow(a, b);
+    public String reverse(String text) {
+        return  new StringBuilder(text).reverse().toString();
     }
 }
