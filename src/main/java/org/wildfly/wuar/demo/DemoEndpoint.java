@@ -1,5 +1,10 @@
 package org.wildfly.wuar.demo;
 
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
+import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
+
+import java.io.InputStream;
+
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -12,8 +17,6 @@ import org.wildfly.wuar.demo.service.DemoService;
 @Path("/")
 public class DemoEndpoint {
 
-    private static final int N = 2;
-
     @Inject
     private DemoService service;
 
@@ -23,12 +26,19 @@ public class DemoEndpoint {
 
     @GET
     @Path("/reverse")
-    @Produces("text/plain")
+    @Produces(TEXT_PLAIN)
     public Response reverse(@QueryParam("text") String text) {
         if (text == null) {
             text = defaultText;
         }
         String response = service.reverse(text);
         return Response.ok(response).build();
+    }
+
+    @GET
+    @Path("/")
+    @Produces(TEXT_HTML)
+    public InputStream getHomePage() {
+        return this.getClass().getResourceAsStream("index.html");
     }
 }
