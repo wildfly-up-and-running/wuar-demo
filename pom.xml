@@ -25,7 +25,7 @@
 
         <version.wildfly>27.0.1.Final</version.wildfly>
         <version.wildfly.cloud>2.0.0.Beta2</version.wildfly.cloud>
-        <version.wildfly.maven.plugin>4.0.0.Final</version.wildfly.maven.plugin>
+        <version.wildfly.maven.plugin>4.1.1.Final</version.wildfly.maven.plugin>
 
         <container.registry>ghcr.io</container.registry>
     </properties>
